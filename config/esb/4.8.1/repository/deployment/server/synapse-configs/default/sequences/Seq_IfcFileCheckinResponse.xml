@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sequence xmlns="http://ws.apache.org/ns/synapse" name="Seq_IfcFileCheckinResponse">
+   <property name="messageType"
+             value="application/json"
+             scope="axis2"
+             type="STRING"/>
+   <log>
+      <property xmlns:ns="http://org.apache.synapse/xsd"
+                name="[BIM-EX_LOG] | Response"
+                expression="json-eval($.)"/>
+   </log>
+   <class name="com.mitrai.bimexchange.CheckinIfcOutFlowMediator"/>
+   <sequence key="Seq_NotifyOnRules"/>
+   <drop/>
+</sequence>

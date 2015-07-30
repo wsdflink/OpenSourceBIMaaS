@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sequence xmlns="http://ws.apache.org/ns/synapse"
+          name="ErrorSeq_IfcFileCheckinResponserSeq">
+   <log>
+      <property xmlns:ns="http://org.apache.synapse/xsd"
+                name="[BIM-EX_LOG] | Error Response"
+                expression="json-eval($.)"/>
+   </log>
+   <class name="com.mitrai.bimexchange.CheckinIfcInFlowMediator">
+      <property name="operation" value="UPDATE"/>
+      <property name="status" value="WAITING"/>
+   </class>
+</sequence>

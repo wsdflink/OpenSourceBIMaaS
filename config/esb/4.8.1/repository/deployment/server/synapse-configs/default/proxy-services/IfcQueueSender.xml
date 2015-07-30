@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<proxy xmlns="http://ws.apache.org/ns/synapse"
+       name="IfcQueueSender"
+       transports="http"
+       startOnLoad="true"
+       trace="disable">
+   <description/>
+   <target>
+      <inSequence>
+         <property name="messageType" value="application/json" scope="axis2"/>
+         <log>
+            <property name="[BIM-EX_LOG]" value="Sending ifc file to queue for processing"/>
+            <property name="POID" expression="json-eval($.request.parameters.poid)"/>
+            <property name="IFC_FILE_NAME"
+                      expression="json-eval($.request.parameters.fileName)"/>
+         </log>
+         <property name="POID"
+                   expression="json-eval($.request.parameters.poid)"
+                   scope="default"
+                   type="STRING"/>
+         <class name="com.mitrai.bimexchange.CheckinIfcInFlowMediator">
+            <property name="operation" value="INSERT"/>
+            <property name="status" value="INIT"/>
+         </class>
+         <property name="messageType" value="application/json" scope="axis2"/>
+         <store messageStore="JMSMessageStore"/>
+         <class name="com.mitrai.bimexchange.CheckinIfcInFlowMediator">
+            <property name="operation" value="UPDATE"/>
+            <property name="status" value="QUEUED"/>
+         </class>
+         <loopback/>
+      </inSequence>
+      <outSequence>
+         <payloadFactory media-type="json">
+            <format>{"response":{"referenceId":"$1"}}</format>
+            <args>
+               <arg evaluator="xml" expression="get-property('referenceId')"/>
+            </args>
+         </payloadFactory>
+         <send/>
+      </outSequence>
+   </target>
+</proxy>

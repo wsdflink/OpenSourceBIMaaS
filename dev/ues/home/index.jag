@@ -1,0 +1,19 @@
+<%
+var caramel;
+	reader = require('/modules/reader.js'),
+	
+
+	
+
+	caramel = require('caramel');
+
+caramel.render({
+		'title': {text :'BIMaas'},
+		'body': {text:reader.readPosts()}
+	});
+
+
+%>
+
+
+

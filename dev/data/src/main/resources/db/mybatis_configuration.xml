@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration
+  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+	<properties resource='sqldb.properties' />
+
+	<!--Defining entity alias <typeAliases> <typeAlias type='com.virtusa.fdc.statemachine.core.entity.SMControl' 
+		alias='SMControl'></typeAlias> <typeAlias type='com.virtusa.fdc.statemachine.core.entity.SMError' 
+		alias='SMError'></typeAlias> <typeAlias type='com.virtusa.fdc.statemachine.core.entity.SMControlRow' 
+		alias='SMControlRow'></typeAlias> <typeAlias type='com.virtusa.fdc.statemachine.core.entity.Metadata' 
+		alias='Metadata'></typeAlias> </typeAliases> -->
+
+	<typeAliases>
+		<typeAlias type='com.bimaas.model.RuleProperty' alias="RuleProperty"></typeAlias>
+		<typeAlias type='com.bimaas.dto.RuleDTO' alias="RuleDTO"></typeAlias>
+	</typeAliases>
+
+	<environments default="development">
+		<environment id="development">
+			<transactionManager type="JDBC" />
+			<dataSource type="POOLED">
+				<property name="driver" value='${sqldb.driver}' />
+				<property name="url" value='${sqldb.url}' />
+				<property name="username" value='${sqldb.username}' />
+				<property name="password" value='${sqldb.password}' />
+			</dataSource>
+		</environment>
+	</environments>
+
+	<!-- <mappers> <mapper resource="db/mappers/SMControlMapper.xml" /> <mapper 
+		resource="db/mappers/SMErrorMapper.xml" /> <mapper resource="db/mappers/SMControlRowMapper.xml" 
+		/> <mapper resource="db/mappers/MetadataMapper.xml" /> </mappers> -->
+
+	<mappers>
+		<mapper resource="db/mappers/RuleParamMapper.xml" />
+	</mappers>
+
+</configuration>

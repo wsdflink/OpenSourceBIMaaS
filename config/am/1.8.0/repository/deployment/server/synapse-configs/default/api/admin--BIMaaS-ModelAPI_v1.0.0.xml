@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<api xmlns="http://ws.apache.org/ns/synapse"
+     name="admin--BIMaaS-ModelAPI"
+     context="/model"
+     version="1.0.0"
+     version-type="url">
+   <resource methods="POST"
+             url-mapping="/CheckInIFCStepFile"
+             faultSequence="fault">
+      <inSequence>
+         <filter source="$ctx:AM_KEY_TYPE" regex="PRODUCTION">
+            <then>
+               <send>
+                  <endpoint name="admin--BIMaaS-ModelAPI_APIproductionEndpoint_0">
+                     <http uri-template="http://52.74.66.119:8284/bimex-model"/>
+                  </endpoint>
+               </send>
+            </then>
+            <else>
+               <sequence key="_sandbox_key_error_"/>
+            </else>
+         </filter>
+      </inSequence>
+      <outSequence>
+         <send/>
+      </outSequence>
+   </resource>
+   <resource methods="POST" url-mapping="/CheckinStatus" faultSequence="fault">
+      <inSequence>
+         <filter source="$ctx:AM_KEY_TYPE" regex="PRODUCTION">
+            <then>
+               <send>
+                  <endpoint name="admin--BIMaaS-ModelAPI_APIproductionEndpoint_1">
+                     <http uri-template="http://52.74.66.119:8284/bimex-model"/>
+                  </endpoint>
+               </send>
+            </then>
+            <else>
+               <sequence key="_sandbox_key_error_"/>
+            </else>
+         </filter>
+      </inSequence>
+      <outSequence>
+         <send/>
+      </outSequence>
+   </resource>
+   <resource methods="POST"
+             url-mapping="/CheckInIFCXMLFile"
+             faultSequence="fault">
+      <inSequence>
+         <filter source="$ctx:AM_KEY_TYPE" regex="PRODUCTION">
+            <then>
+               <send>
+                  <endpoint name="admin--BIMaaS-ModelAPI_APIproductionEndpoint_2">
+                     <http uri-template="http://52.74.66.119:8284/bimex-model"/>
+                  </endpoint>
+               </send>
+            </then>
+            <else>
+               <sequence key="_sandbox_key_error_"/>
+            </else>
+         </filter>
+      </inSequence>
+      <outSequence>
+         <send/>
+      </outSequence>
+   </resource>
+   <resource methods="POST"
+             url-mapping="/CheckInIFCXMLZipFile"
+             faultSequence="fault">
+      <inSequence>
+         <filter source="$ctx:AM_KEY_TYPE" regex="PRODUCTION">
+            <then>
+               <send>
+                  <endpoint name="admin--BIMaaS-ModelAPI_APIproductionEndpoint_3">
+                     <http uri-template="http://52.74.66.119:8284/bimex-model"/>
+                  </endpoint>
+               </send>
+            </then>
+            <else>
+               <sequence key="_sandbox_key_error_"/>
+            </else>
+         </filter>
+      </inSequence>
+      <outSequence>
+         <send/>
+      </outSequence>
+   </resource>
+   <resource methods="POST" url-mapping="/GetAllRevisions" faultSequence="fault">
+      <inSequence>
+         <filter source="$ctx:AM_KEY_TYPE" regex="PRODUCTION">
+            <then>
+               <send>
+                  <endpoint name="admin--BIMaaS-ModelAPI_APIproductionEndpoint_4">
+                     <http uri-template="http://52.74.66.119:8284/bimex-model"/>
+                  </endpoint>
+               </send>
+            </then>
+            <else>
+               <sequence key="_sandbox_key_error_"/>
+            </else>
+         </filter>
+      </inSequence>
+      <outSequence>
+         <send/>
+      </outSequence>
+   </resource>
+   <resource methods="POST"
+             url-mapping="/DownloadModelByRevisionId"
+             faultSequence="fault">
+      <inSequence>
+         <filter source="$ctx:AM_KEY_TYPE" regex="PRODUCTION">
+            <then>
+               <send>
+                  <endpoint name="admin--BIMaaS-ModelAPI_APIproductionEndpoint_5">
+                     <http uri-template="http://52.74.66.119:8284/bimex-model"/>
+                  </endpoint>
+               </send>
+            </then>
+            <else>
+               <sequence key="_sandbox_key_error_"/>
+            </else>
+         </filter>
+      </inSequence>
+      <outSequence>
+         <send/>
+      </outSequence>
+   </resource>
+   <resource methods="POST"
+             url-mapping="/CheckInIFCFIleFromUrl"
+             faultSequence="fault">
+      <inSequence>
+         <filter source="$ctx:AM_KEY_TYPE" regex="PRODUCTION">
+            <then>
+               <send>
+                  <endpoint name="admin--BIMaaS-ModelAPI_APIproductionEndpoint_6">
+                     <http uri-template="http://52.74.66.119:8284/bimex-model"/>
+                  </endpoint>
+               </send>
+            </then>
+            <else>
+               <sequence key="_sandbox_key_error_"/>
+            </else>
+         </filter>
+      </inSequence>
+      <outSequence>
+         <send/>
+      </outSequence>
+   </resource>
+   <resource methods="POST"
+             url-mapping="/CheckoutModelByRevisionId"
+             faultSequence="fault">
+      <inSequence>
+         <filter source="$ctx:AM_KEY_TYPE" regex="PRODUCTION">
+            <then>
+               <send>
+                  <endpoint name="admin--BIMaaS-ModelAPI_APIproductionEndpoint_7">
+                     <http uri-template="http://52.74.66.119:8284/bimex-model"/>
+                  </endpoint>
+               </send>
+            </then>
+            <else>
+               <sequence key="_sandbox_key_error_"/>
+            </else>
+         </filter>
+      </inSequence>
+      <outSequence>
+         <send/>
+      </outSequence>
+   </resource>
+   <handlers>
+      <handler class="org.wso2.carbon.apimgt.gateway.handlers.security.APIAuthenticationHandler"/>
+      <handler class="org.wso2.carbon.apimgt.gateway.handlers.throttling.APIThrottleHandler">
+         <property name="id" value="A"/>
+         <property name="policyKey" value="gov:/apimgt/applicationdata/tiers.xml"/>
+      </handler>
+      <handler class="org.wso2.carbon.apimgt.usage.publisher.APIMgtUsageHandler"/>
+      <handler class="org.wso2.carbon.apimgt.usage.publisher.APIMgtGoogleAnalyticsTrackingHandler">
+         <property name="configKey" value="gov:/apimgt/statistics/ga-config.xml"/>
+      </handler>
+      <handler class="org.wso2.carbon.apimgt.gateway.handlers.ext.APIManagerExtensionHandler"/>
+   </handlers>
+</api>

@@ -1,0 +1,513 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<api xmlns="http://ws.apache.org/ns/synapse"
+     name="BimExModel"
+     context="/bimex-model">
+   <resource methods="POST OPTIONS" url-mapping="/CheckInIFCStepFile">
+      <inSequence>
+         <property name="messageType" value="application/json" scope="axis2"/>
+         <filter source="json-eval($.request.method)" regex="checkInIFCStepFile">
+            <then>
+               <property name="AUTHZ_USER_TOKEN"
+                         expression="$trp:Authorization"
+                         scope="default"
+                         type="STRING"/>
+               <payloadFactory media-type="json">
+                  <format>{"request":{"interface":"ServiceInterface","method":"checkin","parameters":{"poid": "$1","comment": "$2","deserializerOid": "655401","fileSize": "$3","fileName": "$4","data":"$5", "merge": "false", "sync": "false"}}}</format>
+                  <args>
+                     <arg evaluator="json" expression="$.request.projectId"/>
+                     <arg evaluator="json" expression="$.request.comment"/>
+                     <arg evaluator="json" expression="$.request.fileSize"/>
+                     <arg evaluator="json" expression="$.request.fileName"/>
+                     <arg evaluator="json" expression="$.request.data"/>
+                  </args>
+               </payloadFactory>
+               <property name="BIM_SERVER_TOKEN"
+                         expression="synapse:get-property('LE_BIM_SERVER_TOKEN')"
+                         scope="default"/>
+               <class name="com.mitrai.bimexchange.BimServerAuthorizationMediator">
+               </class>
+               <class name="com.mitrai.bimexchange.CheckoutStatusMediator">
+                  <property name="operation" value="UPDATE"/>
+                  <property name="isLocked" value="0"/>
+               </class>
+               <filter source="get-property('STOP_FLOW')" regex="1">
+                  <then>
+                     <respond/>
+                  </then>
+                  <else/>
+               </filter>
+               <log>
+                  <property name="[BIM-EX_LOG] | TRANSFORMED_JSON_BODY_TOKEN"
+                            expression="json-eval($.token)"/>
+               </log>
+               <send>
+                  <endpoint>
+                     <address uri="http://52.74.66.119:8284/services/IfcQueueSender"/>
+                  </endpoint>
+               </send>
+            </then>
+            <else>
+               <log>
+                  <property name="[BIM-EX_LOG]" value="Error in checkin request"/>
+               </log>
+               <payloadFactory media-type="json">
+                  <format>{"error":"checkin request error", "error-message":"only checkInIFCStepFile requests are allowed to invoke through this api call"}</format>
+                  <args/>
+               </payloadFactory>
+               <respond/>
+            </else>
+         </filter>
+      </inSequence>
+      <outSequence>
+         <send/>
+      </outSequence>
+   </resource>
+   <resource methods="POST OPTIONS" url-mapping="/CheckinStatus">
+      <inSequence>
+         <log>
+            <property name="CHECKIN_STATUS" expression="json-eval($.)"/>
+         </log>
+         <class name="com.mitrai.bimexchange.CheckinStatusMediator"/>
+         <respond/>
+      </inSequence>
+      <outSequence/>
+   </resource>
+   <resource methods="POST OPTIONS" url-mapping="/CheckInIFCXMLFile">
+      <inSequence>
+         <property name="messageType" value="application/json" scope="axis2"/>
+         <filter source="json-eval($.request.method)" regex="checkInIFCXMLFile">
+            <then>
+               <property name="AUTHZ_USER_TOKEN"
+                         expression="$trp:Authorization"
+                         scope="default"
+                         type="STRING"/>
+               <payloadFactory media-type="json">
+                  <format>{"request":{"interface":"Bimsie1ServiceInterface","method":"checkin","parameters":{"poid": "$1","comment": "$2","deserializerOid": "524329","fileSize": "$3","fileName": "$4","data":"$5", "merge": "false", "sync": "false"}}}</format>
+                  <args>
+                     <arg evaluator="json" expression="$.request.projectId"/>
+                     <arg evaluator="json" expression="$.request.comment"/>
+                     <arg evaluator="json" expression="$.request.fileSize"/>
+                     <arg evaluator="json" expression="$.request.fileName"/>
+                     <arg evaluator="json" expression="$.request.data"/>
+                  </args>
+               </payloadFactory>
+               <property name="BIM_SERVER_TOKEN"
+                         expression="synapse:get-property('LE_BIM_SERVER_TOKEN')"
+                         scope="default"/>
+               <class name="com.mitrai.bimexchange.BimServerAuthorizationMediator">
+               </class>
+               <class name="com.mitrai.bimexchange.CheckoutStatusMediator">
+                  <property name="operation" value="UPDATE"/>
+                  <property name="isLocked" value="0"/>
+               </class>
+               <filter source="get-property('STOP_FLOW')" regex="1">
+                  <then>
+                     <respond/>
+                  </then>
+                  <else/>
+               </filter>
+               <log>
+                  <property name="[BIM-EX_LOG] | TRANSFORMED_JSON_BODY_TOKEN"
+                            expression="json-eval($.token)"/>
+               </log>
+               <send>
+                  <endpoint>
+                     <address uri="http://52.74.66.119:8284/services/IfcQueueSender"/>
+                  </endpoint>
+               </send>
+            </then>
+            <else>
+               <log>
+                  <property name="[BIM-EX_LOG]" value="Error in checkin request"/>
+               </log>
+               <payloadFactory media-type="json">
+                  <format>{"error":"checkin request error", "error-message":"only checkInIFCXMLFile requests are allowed to invoke through this api call"}</format>
+                  <args/>
+               </payloadFactory>
+               <respond/>
+            </else>
+         </filter>
+      </inSequence>
+      <outSequence>
+         <send/>
+      </outSequence>
+   </resource>
+   <resource methods="POST OPTIONS" url-mapping="/CheckInIFCXMLZipFile">
+      <inSequence>
+         <property name="messageType" value="application/json" scope="axis2"/>
+         <filter source="json-eval($.request.method)" regex="checkInIFCXMLZipFile">
+            <then>
+               <property name="AUTHZ_USER_TOKEN"
+                         expression="$trp:Authorization"
+                         scope="default"
+                         type="STRING"/>
+               <payloadFactory media-type="json">
+                  <format>{"request":{"interface":"Bimsie1ServiceInterface","method":"checkin","parameters":{"poid": "$1","comment": "$2","deserializerOid": "524329","fileSize": "$3","fileName": "$4","data":"$5", "merge": "false", "sync": "false"}}}</format>
+                  <args>
+                     <arg evaluator="json" expression="$.request.projectId"/>
+                     <arg evaluator="json" expression="$.request.comment"/>
+                     <arg evaluator="json" expression="$.request.fileSize"/>
+                     <arg evaluator="json" expression="$.request.fileName"/>
+                     <arg evaluator="json" expression="$.request.data"/>
+                  </args>
+               </payloadFactory>
+               <property name="BIM_SERVER_TOKEN"
+                         expression="synapse:get-property('LE_BIM_SERVER_TOKEN')"
+                         scope="default"/>
+               <class name="com.mitrai.bimexchange.BimServerAuthorizationMediator">
+               </class>
+               <class name="com.mitrai.bimexchange.CheckoutStatusMediator">
+                  <property name="operation" value="UPDATE"/>
+                  <property name="isLocked" value="0"/>
+               </class>
+               <filter source="get-property('STOP_FLOW')" regex="1">
+                  <then>
+                     <respond/>
+                  </then>
+                  <else/>
+               </filter>
+               <log>
+                  <property name="[BIM-EX_LOG] | TRANSFORMED_JSON_BODY_TOKEN"
+                            expression="json-eval($.token)"/>
+               </log>
+               <send>
+                  <endpoint>
+                     <address uri="http://52.74.66.119:8284/services/IfcQueueSender"/>
+                  </endpoint>
+               </send>
+            </then>
+            <else>
+               <log>
+                  <property name="[BIM-EX_LOG]" value="Error in checkin request"/>
+               </log>
+               <payloadFactory media-type="json">
+                  <format>{"error":"checkin request error", "error-message":"only checkInIFCXMLFile requests are allowed to invoke through this api call"}</format>
+                  <args/>
+               </payloadFactory>
+               <respond/>
+            </else>
+         </filter>
+      </inSequence>
+      <outSequence>
+         <send/>
+      </outSequence>
+   </resource>
+   <resource methods="POST OPTIONS" url-mapping="/CheckInIFCFIleFromUrl">
+      <inSequence>
+         <property name="messageType" value="application/json" scope="axis2"/>
+         <filter source="json-eval($.request.method)" regex="checkInIFCFIleFromUrl">
+            <then>
+               <filter source="json-eval($.request.url)" regex=".*\.ifc">
+                  <then>
+                     <property name="DEZ_OID" value="655401" scope="default"/>
+                  </then>
+                  <else>
+                     <filter source="json-eval($.request.url)" regex=".*\.ifcxml">
+                        <then>
+                           <property name="DEZ_OID" value="524329" scope="default"/>
+                        </then>
+                        <else>
+                           <log>
+                              <property name="[BIM-EX_LOG]" value="Error in file url"/>
+                           </log>
+                           <payloadFactory media-type="json">
+                              <format>{"error":"Unsupported file url", "error-message":"Only .ifc and .ifcxml files are allowed"}</format>
+                              <args/>
+                           </payloadFactory>
+                           <respond/>
+                        </else>
+                     </filter>
+                  </else>
+               </filter>
+               <property name="AUTHZ_USER_TOKEN"
+                         expression="$trp:Authorization"
+                         scope="default"
+                         type="STRING"/>
+               <payloadFactory media-type="json">
+                  <format>{"request":{"interface":"Bimsie1ServiceInterface","method":"checkinFromUrl","parameters":{"poid":"$1","comment":"$2","fileName":"$3","url":"$4","deserializerOid":"$5","merge":"false","sync":"false"}}}</format>
+                  <args>
+                     <arg evaluator="json" expression="$.request.projectId"/>
+                     <arg evaluator="json" expression="$.request.comment"/>
+                     <arg evaluator="json" expression="$.request.fileName"/>
+                     <arg evaluator="json" expression="$.request.url"/>
+                     <arg evaluator="xml" expression="get-property('DEZ_OID')"/>
+                  </args>
+               </payloadFactory>
+               <property name="BIM_SERVER_TOKEN"
+                         expression="synapse:get-property('LE_BIM_SERVER_TOKEN')"
+                         scope="default"/>
+               <class name="com.mitrai.bimexchange.BimServerAuthorizationMediator">
+               </class>
+               <class name="com.mitrai.bimexchange.CheckoutStatusMediator">
+                  <property name="operation" value="UPDATE"/>
+                  <property name="isLocked" value="0"/>
+               </class>
+               <filter source="get-property('STOP_FLOW')" regex="1">
+                  <then>
+                     <respond/>
+                  </then>
+                  <else/>
+               </filter>
+               <log>
+                  <property name="[BIM-EX_LOG] | TRANSFORMED_JSON_BODY_TOKEN"
+                            expression="json-eval($.token)"/>
+               </log>
+               <send>
+                  <endpoint>
+                     <address uri="http://52.74.66.119:8284/services/IfcQueueSender"/>
+                  </endpoint>
+               </send>
+            </then>
+            <else>
+               <log>
+                  <property name="[BIM-EX_LOG]" value="Error in checkin request"/>
+               </log>
+               <payloadFactory media-type="json">
+                  <format>{"error":"checkin request error", "error-message":"only checkInIFCXMLFile requests are allowed to invoke through this api call"}</format>
+                  <args/>
+               </payloadFactory>
+               <respond/>
+            </else>
+         </filter>
+      </inSequence>
+      <outSequence>
+         <send/>
+      </outSequence>
+   </resource>
+   <resource methods="POST OPTIONS" url-mapping="/GetAllRevisions">
+      <inSequence>
+         <filter source="json-eval($.request.method)" regex="getAllRevisions">
+            <then>
+               <log>
+                  <property name="Get all revisions" expression="json-eval($.)"/>
+               </log>
+               <property name="AUTHZ_USER_TOKEN"
+                         expression="$trp:Authorization"
+                         scope="default"
+                         type="STRING"/>
+               <class name="com.mitrai.bimexchange.AuthorizingUserForProjectMediator"/>
+               <filter source="get-property('STOP_FLOW')" regex="1">
+                  <then>
+                     <respond/>
+                  </then>
+                  <else/>
+               </filter>
+               <payloadFactory media-type="json">
+                  <format>{"request": {"interface": "Bimsie1ServiceInterface", "method": "getAllRevisionsOfProject", "parameters": {"poid": "$1"}}}</format>
+                  <args>
+                     <arg evaluator="json" expression="$.request.projectId"/>
+                  </args>
+               </payloadFactory>
+               <property name="BIM_SERVER_TOKEN"
+                         expression="synapse:get-property('LE_BIM_SERVER_TOKEN')"
+                         scope="default"/>
+               <class name="com.mitrai.bimexchange.BimServerAuthorizationMediator">
+               </class>
+               <log>
+                  <property name="[BIM-EX_LOG] | TRANSFORMED_JSON_BODY" expression="json-eval($.)"/>
+               </log>
+               <send>
+                  <endpoint key="bimserverendpoint"/>
+               </send>
+            </then>
+            <else>
+               <log>
+                  <property name="[BIM-EX_LOG]" value="Error in checkin request"/>
+               </log>
+               <payloadFactory media-type="json">
+                  <format>{"error":"checkin request error", "error-message":"only getAllRevisions requests are allowed to invoke through this api call"}</format>
+                  <args/>
+               </payloadFactory>
+               <respond/>
+            </else>
+         </filter>
+      </inSequence>
+      <outSequence>
+         <log>
+            <property name="[BIM-EX_LOG]"
+                      value="Response recieved to out sequence from bim server"/>
+            <property name="[BIM-EX_LOG]" expression="json-eval($.)"/>
+         </log>
+         <send/>
+      </outSequence>
+   </resource>
+   <resource methods="OPTIONS POST" url-mapping="/DownloadModelByRevisionId">
+      <inSequence>
+         <filter source="json-eval($.request.method)" regex="downloadModelByRevisionId">
+            <then>
+               <log>
+                  <property name="DownloadModelByRevisionId" expression="json-eval($.)"/>
+               </log>
+               <property name="AUTHZ_USER_TOKEN"
+                         expression="$trp:Authorization"
+                         scope="default"
+                         type="STRING"/>
+               <filter source="json-eval($.request.downloadType)" regex="xml">
+                  <then>
+                     <property name="SERIALIZER_ID"
+                               value="2883622"
+                               scope="default"
+                               type="STRING"/>
+                  </then>
+                  <else>
+                     <filter source="json-eval($.request.downloadType)" regex="step">
+                        <then>
+                           <property name="SERIALIZER_ID"
+                                     value="2687014"
+                                     scope="default"
+                                     type="STRING"/>
+                        </then>
+                        <else>
+                           <log>
+                              <property name="[BIM-EX_LOG]" value="Error in download type"/>
+                           </log>
+                           <payloadFactory media-type="json">
+                              <format>{"error":"Unsupported download type", "error-message":"Only step or xml type are allowed"}</format>
+                              <args/>
+                           </payloadFactory>
+                           <respond/>
+                        </else>
+                     </filter>
+                  </else>
+               </filter>
+               <class name="com.mitrai.bimexchange.AuthorizingUserForProjectMediator"/>
+               <filter source="get-property('STOP_FLOW')" regex="1">
+                  <then>
+                     <respond/>
+                  </then>
+                  <else/>
+               </filter>
+               <payloadFactory media-type="json">
+                  <format>{"request": {"interface": "Bimsie1ServiceInterface", "method": "download", "parameters": {"roid": "$1","serializerOid": "$2","showOwn": "false","sync": "false"}}}</format>
+                  <args>
+                     <arg evaluator="json" expression="$.request.revisionId"/>
+                     <arg evaluator="xml" expression="get-property('SERIALIZER_ID')"/>
+                  </args>
+               </payloadFactory>
+               <property name="BIM_SERVER_TOKEN"
+                         expression="synapse:get-property('LE_BIM_SERVER_TOKEN')"
+                         scope="default"/>
+               <class name="com.mitrai.bimexchange.BimServerAuthorizationMediator">
+               </class>
+               <log>
+                  <property name="[BIM-EX_LOG] | TRANSFORMED_JSON_BODY" expression="json-eval($.)"/>
+               </log>
+               <sequence key="Seq_CheckoutHandler"/>
+            </then>
+            <else>
+               <log>
+                  <property name="[BIM-EX_LOG]" value="Error in checkin request"/>
+               </log>
+               <payloadFactory media-type="json">
+                  <format>{"error":"checkin request error", "error-message":"only downloadModelByRevisionId requests are allowed to invoke through this api call"}</format>
+                  <args/>
+               </payloadFactory>
+               <respond/>
+            </else>
+         </filter>
+      </inSequence>
+      <outSequence>
+         <log>
+            <property name="[BIM-EX_LOG]"
+                      value="Response recieved to out sequence from bim server"/>
+            <property name="[BIM-EX_LOG]" expression="json-eval($.)"/>
+         </log>
+         <send/>
+      </outSequence>
+   </resource>
+   <resource methods="OPTIONS POST" url-mapping="/CheckoutModelByRevisionId">
+      <inSequence>
+         <filter source="json-eval($.request.method)" regex="checkoutModelByRevisionId">
+            <then>
+               <log>
+                  <property name="CheckoutModelByRevisionId" expression="json-eval($.)"/>
+               </log>
+               <property name="AUTHZ_USER_TOKEN"
+                         expression="$trp:Authorization"
+                         scope="default"
+                         type="STRING"/>
+               <filter source="json-eval($.request.downloadType)" regex="xml">
+                  <then>
+                     <property name="SERIALIZER_ID"
+                               value="2883622"
+                               scope="default"
+                               type="STRING"/>
+                  </then>
+                  <else>
+                     <filter source="json-eval($.request.downloadType)" regex="step">
+                        <then>
+                           <property name="SERIALIZER_ID"
+                                     value="2687014"
+                                     scope="default"
+                                     type="STRING"/>
+                        </then>
+                        <else>
+                           <log>
+                              <property name="[BIM-EX_LOG]" value="Error in download type"/>
+                           </log>
+                           <payloadFactory media-type="json">
+                              <format>{"error":"Unsupported download type", "error-message":"Only step or xml type are allowed"}</format>
+                              <args/>
+                           </payloadFactory>
+                           <respond/>
+                        </else>
+                     </filter>
+                  </else>
+               </filter>
+               <class name="com.mitrai.bimexchange.AuthorizingUserForProjectMediator"/>
+               <filter source="get-property('STOP_FLOW')" regex="1">
+                  <then>
+                     <respond/>
+                  </then>
+                  <else/>
+               </filter>
+               <payloadFactory media-type="json">
+                  <format>{"request": {"interface": "Bimsie1ServiceInterface", "method": "download", "parameters": {"poid":"$1","roid": "$2","serializerOid": "$3","showOwn": "false","sync": "false"}}}</format>
+                  <args>
+                     <arg evaluator="json" expression="$.request.projectId"/>
+                     <arg evaluator="json" expression="$.request.revisionId"/>
+                     <arg evaluator="xml" expression="get-property('SERIALIZER_ID')"/>
+                  </args>
+               </payloadFactory>
+               <property name="BIM_SERVER_TOKEN"
+                         expression="synapse:get-property('LE_BIM_SERVER_TOKEN')"
+                         scope="default"/>
+               <class name="com.mitrai.bimexchange.BimServerAuthorizationMediator">
+               </class>
+               <class name="com.mitrai.bimexchange.CheckoutStatusMediator">
+                  <property name="operation" value="INSERT"/>
+                  <property name="isLocked" value="1"/>
+               </class>
+               <filter source="get-property('STOP_FLOW')" regex="1">
+                  <then>
+                     <respond/>
+                  </then>
+                  <else/>
+               </filter>
+               <log>
+                  <property name="[BIM-EX_LOG] | TRANSFORMED_JSON_BODY" expression="json-eval($.)"/>
+               </log>
+               <sequence key="Seq_CheckoutHandler"/>
+            </then>
+            <else>
+               <log>
+                  <property name="[BIM-EX_LOG]" value="Error in checkin request"/>
+               </log>
+               <payloadFactory media-type="json">
+                  <format>{"error":"checkin request error", "error-message":"only CheckoutModelByRevisionId requests are allowed to invoke through this api call"}</format>
+                  <args/>
+               </payloadFactory>
+               <respond/>
+            </else>
+         </filter>
+      </inSequence>
+      <outSequence>
+         <log>
+            <property name="[BIM-EX_LOG]"
+                      value="Response recieved to out sequence from bim server"/>
+            <property name="[BIM-EX_LOG]" expression="json-eval($.)"/>
+         </log>
+         <send/>
+      </outSequence>
+   </resource>
+</api>

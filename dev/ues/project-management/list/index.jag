@@ -1,0 +1,391 @@
+<%
+scripts = [];
+var styles = [];
+var process = require('process');
+var url = 'http://' + process.getProperty('server.host') + ':' +process.getProperty('http.port');
+%>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+
+
+<script type="application/javascript">
+   function loadProjectUpdate(project_id)
+   {
+
+      $.post("https://52.74.66.119:9451/mock-services-1.0.0/services/project/" + project_id, function(
+         projectData)
+      {
+         //var prjJson = JSON.parse(projectData.response);
+         projectName = projectData.project.projectName;
+         description = projectData.project.description;
+         latitude = projectData.project.latitude;
+         longitude = projectData.project.longitude;
+         category = projectData.project.category;
+         type = projectData.project.category;
+
+         $('#contwrap')
+            .load('https://52.74.66.119:9453/project-management/update', function(updatePage)
+            {
+
+               $('#prj-name-txt')
+                  .val(projectName);
+               $('#prj-description-txt')
+                  .val(description);
+               $('#latitude-txt')
+                  .val(latitude);
+               $('#longitude-txt')
+                  .val(longitude);
+               $('#parent_projects_container')
+                  .val(918)
+
+               if (category == 'Construction')
+               {
+                  $("div.col-sm-10 select")
+                     .val("0");
+               }
+               else
+               {
+                  $("div.col-sm-10 select")
+                     .val("1");
+               }
+            })
+      })
+   };
+
+</script>
+
+<script type="application/javascript">
+   var createCORSRequest = function(
+      method, url)
+   {
+      var xhr = new XMLHttpRequest();
+      if ("withCredentials" in
+         xhr)
+      {
+         // Most browsers.
+         xhr.open(method, url,
+            true);
+      }
+      else if (typeof XDomainRequest !=
+         "undefined")
+      {
+         // IE8 & IE9
+         xhr = new XDomainRequest();
+         xhr.open(method, url);
+      }
+      else
+      {
+         // CORS not supported.
+         xhr = null;
+      }
+      return xhr;
+   };
+
+   var url =
+      'https://52.74.66.119:9451/mock-services-1.0.0/services/project/all';
+   var method = 'POST';
+   var xhr = createCORSRequest(method, url);
+   var name1;
+   var name2;
+
+   xhr.onload = function()
+   {
+      // Success code goes here
+      var jsn = JSON.parse(xhr.response);
+      var template = $('#project_row_template')
+         .html();
+
+      $('#project-items-container')
+         .html('')
+
+      $.each(jsn.project,
+         function(i, v)
+         {
+            // template = template_ori;
+            x = template.replace(/{project_name}/g, v.projectName)
+               .replace(
+                  /{project_type}/g, v.category)
+               .replace(/{project_id}/g, v.projectId);
+
+            // console.log(x);
+            //if(i == 2 ) { 
+            //   }
+            $('#project-items-container')
+               .append(x);
+         });
+
+      <!-- Icheck for the check box. -->
+      $('input[type="checkbox"].minimal-red, input[type="radio"].minimal-red')
+         .iCheck(
+         {
+            checkboxClass: 'icheckbox_minimal-red',
+            radioClass: 'iradio_minimal-red'
+         });
+
+      //Flat red color scheme for iCheck
+      $('input[type="checkbox"].flat-red, input[type="radio"].flat-red')
+         .iCheck(
+         {
+            checkboxClass: 'icheckbox_flat-green',
+            radioClass: 'iradio_flat-green'
+         });
+   };
+
+   xhr.onerror = function()
+   {
+      // Error code goes here.
+   };
+   xhr.send();
+
+   //Red color scheme for iCheck
+
+</script>
+
+<script id="project_row_template" type="text/template">
+   <tr>
+      <td>{project_name}</td>
+      <td>{project_type}</td>
+      <td>
+         <a href="#" class="fa fa-fw fa-edit" onclick="loadProjectUpdate({project_id});"></a>
+      </td>
+      <td>
+         <a href="#" class="fa fa-fw fa-search" onclick="$('#popup-proj1-details').show();"></a>
+      </td>
+      <td>
+         <a href="#" class="fa fa-fw fa-send" onclick="$('#popup-proj1-checkin').show();"></a>
+      </td>
+      <td>
+         <input class="flat-red" type="checkbox" value="1" name="demo" checked="checked" />
+      </td>
+   </tr>
+</script>
+
+
+<!-- iCheck for checkboxes and radio inputs -->
+<link href="../project-management/list/plugins/iCheck/all.css" rel="stylesheet" type="text/css" />
+
+<!-- ======= Scripts for Project List ======-->
+<script type="application/javascript" src="../project-management/list/plugins/iCheck/icheck.min.js" type="text/javascript"></script>
+
+
+<!--Icheck for the check box. This should also be here to show the icheck after first loading--->
+
+<script type="application/javascript">
+   $('input[type="checkbox"].minimal-red, input[type="radio"].minimal-red')
+      .iCheck(
+      {
+         checkboxClass: 'icheckbox_minimal-red',
+         radioClass: 'iradio_minimal-red'
+      });
+
+   //Flat red color scheme for iCheck
+   $('input[type="checkbox"].flat-red, input[type="radio"].flat-red')
+      .iCheck(
+      {
+         checkboxClass: 'icheckbox_flat-green',
+         radioClass: 'iradio_flat-green'
+      });
+
+</script>
+
+<!-- ============================ PROJECT CREATE =============================== -->
+
+<section class="content">
+
+   <div class="row">
+
+      <!-- left column -->
+      <div class="col-xs-12">
+         <div class="box">
+            <div class="box-header">
+               <h3 class="box-title">Project List</h3>
+               <div class="box-tools">
+                  <div style="width: 150px;" class="input-group">
+                     <input type="text" placeholder="Search" class="form-control input-sm pull-right" name="table_search">
+                     <div class="input-group-btn">
+                        <button class="btn btn-sm btn-default">
+                           <i class="fa fa-search"></i>
+                        </button>
+                     </div>
+                  </div>
+               </div>
+            </div>
+            <!-- /.box-header -->
+
+            <div class="box-body table-responsive no-padding">
+               <table class="table table-hover" id="project_table">
+                  <thead>
+                     <tr>
+                        <th>Project name</th>
+                        <th>Category</th>
+                        <th>Edit</th>
+                        <th>View</th>
+                        <th>Check In</th>
+                        <th>Active</th>
+                     </tr>
+                  </thead>
+                  <tbody id="project-items-container">
+                  </tbody>
+               </table>
+            </div>
+            <!-- /.box-body -->
+         </div>
+         <div class="example-modal">
+            <div class="modal modal-plane" id="popup-proj1-details">
+               <div class="modal-dialog">
+                  <div class="modal-content">
+                     <div class="modal-header" style="background-color: #3c8dbc !important;">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="$('.modal-plane').hide();">
+                           <span aria-hidden="true">&times;</span>
+                        </button>
+                        <h4 class="modal-title">Project Details</h4>
+                     </div>
+                     <div class="modal-body">
+                        <div class="row">
+                           <div class="col-md-6">Project Name:</div>
+                           <div class="col-md-6">ABC project</div>
+                        </div>
+                        <div class="row">
+                           <div class="col-md-6">Description:</div>
+                           <div class="col-md-6">Loram Posam</div>
+                        </div>
+                        <div class="row">
+                           <div class="col-md-6">Parent Project:</div>
+                           <div class="col-md-6">None</div>
+                        </div>
+                        <div class="row">
+                           <div class="col-md-6">Project Location:</div>
+                           <div class="col-md-6">
+                              <p>Longitude: 21</p>
+                              <p>Latitude: 21</p>
+                           </div>
+                        </div>
+                        <div class="row">
+                           <div class="col-md-6">Project Type:</div>
+                           <div class="col-md-6">Construction</div>
+                        </div>
+                        <div class="row">
+                           <div class="col-xs-12" style="margin-top: 10px;">
+                              <div class="box-body table-responsive no-padding">
+                                 <table class="table table-bordered table-hover">
+                                    <tbody>
+                                       <tr>
+                                          <th>File Name</th>
+                                          <th>Check In Date</th>
+                                          <th>Revision Id</th>
+                                          <th>Set As active</th>
+                                          <th>Status</th>
+                                       </tr>
+                                       <tr>
+                                          <td>Model1.ifc</td>
+                                          <td>01-Jan-2015</td>
+                                          <td>1</td>
+                                          <td>
+                                             <input class="minimal-red" type="radio" value="1" name="demo">
+                                          </td>
+                                          <td>Processing..</td>
+                                       </tr>
+                                       <tr>
+                                          <td>Model2.ifc</td>
+                                          <td>02-Jan-2015</td>
+                                          <td>2</td>
+                                          <td>
+                                             <input class="minimal-red" type="radio" value="1" name="demo">
+                                          </td>
+                                          <td>Checked In</td>
+                                       </tr>
+                                    </tbody>
+                                 </table>
+                              </div>
+                              <!-- /.box-body -->
+                           </div>
+                        </div>
+                     </div>
+                     <div class="modal-footer">
+                        <button type="button" class="btn btn-outline pull-left" data-dismiss="modal" onclick="$('.modal-plane').hide();">Close</button>
+                        <button type="button" class="btn btn-outline">Save changes</button>
+                     </div>
+                  </div>
+                  <!-- /.modal-content -->
+               </div>
+               <!-- /.modal-dialog -->
+            </div>
+            <!-- /.modal -->
+         </div>
+         <!-- /.example-modal -->
+
+         <div class="example-modal">
+            <div class="modal modal-plane" id="popup-proj1-checkin">
+               <div class="modal-dialog">
+                  <div class="modal-content">
+                     <div class="modal-header" style="background-color: #3c8dbc !important;">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="$('.modal-plane').hide();">
+                           <span aria-hidden="true">&times;</span>
+                        </button>
+                        <h4 class="modal-title">Check In Model File</h4>
+                     </div>
+                     <div class="modal-body">
+                        <div class="row">
+                           <div class="col-md-6">Upload Model File:</div>
+                           <div class="col-md-6">
+                              <input type="file" id="exampleInputFile">
+                              <p class="help-block">Select your logo for the project</p>
+                           </div>
+                        </div>
+                        <div class="row">
+                           <div class="col-xs-12" style="margin-top: 10px;">
+                              <div class="box-body table-responsive no-padding">
+                                 <table class="table table-bordered table-hover">
+                                    <tbody>
+                                       <tr>
+                                          <th>File Name</th>
+                                          <th>Check In Date</th>
+                                          <th>Revision Id</th>
+                                          <th>Set As active</th>
+                                          <th>Status</th>
+                                       </tr>
+                                       <tr>
+                                          <td>Model1.ifc</td>
+                                          <td>01-Jan-2015</td>
+                                          <td>1</td>
+                                          <td>
+                                             <input class="minimal-red" type="radio" value="1" name="demo">
+                                          </td>
+                                          <td>Processing..</td>
+                                       </tr>
+                                       <tr>
+                                          <td>Model2.ifc</td>
+                                          <td>02-Jan-2015</td>
+                                          <td>2</td>
+                                          <td>
+                                             <input class="minimal-red" type="radio" value="1" name="demo">
+                                          </td>
+                                          <td>Checked In</td>
+                                       </tr>
+                                    </tbody>
+                                 </table>
+                              </div>
+                              <!-- /.box-body -->
+                           </div>
+                        </div>
+                     </div>
+
+                     <div class="modal-footer">
+                        <button type="button" class="btn btn-outline pull-left" data-dismiss="modal" onclick="$('.modal-plane').hide();">Close</button>
+                        <button type="button" class="btn btn-outline">Save changes</button>
+                     </div>
+                  </div>
+                  <!-- /.modal-content -->
+               </div>
+               <!-- /.modal-dialog -->
+            </div>
+            <!-- /.modal -->
+         </div>
+         <!-- /.example-modal -->
+      </div>
+   </div>
+   <!-- /.row -->
+
+</section>
+<!-- /.content -->
+<!-- ============================ ~~~~~~~~~~~~~~ =============================== -->

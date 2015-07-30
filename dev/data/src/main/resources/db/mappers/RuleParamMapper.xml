@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.bimaas.data.mappers.RuleMapper">
+
+
+	<!-- Updating rule -->
+	<update id="updateRuleValues" parameterType="RuleProperty">
+		UPDATE
+		rule_property
+		SET
+		property_value=#{propertyValue} WHERE
+		rule_property_id=#{rulePropertyId};
+	</update>
+
+	<!-- Select Rule Param for a given rule id -->
+	<select id="getRuleProperties" resultMap="ruleDTOResultMap"
+		parameterType="map" flushCache="false" useCache="false">
+		select
+		rp.property_name AS
+		propertyName,
+		r.rule_name AS ruleName,
+		r.rule_desc AS
+		ruleDescription,
+		pr.is_active AS isActive,
+		rpv.last_updated_timestamp as
+		propertyUpdatedTimestamp,
+		pr.project_id AS projectId,
+		pr.rule_id AS
+		ruleId,
+		rpv.property_value AS propertyValue
+		from rule AS r
+		JOIN
+		rule_property AS rp
+		ON r.rule_id=rp.rule_id
+		JOIN rule_property_value AS
+		rpv
+		ON rpv.rule_property_id=rp.rule_property_id
+		JOIN project_rule AS pr
+		ON rp.rule_id=pr.rule_id
+		WHERE
+		pr.project_id=#{projectId,jdbcType=BIGINT}
+		AND
+		pr.rule_id=#{ruleId,jdbcType=BIGINT}
+		GROUP BY rp.rule_property_id;
+	</select>
+
+	<!-- Result Map for ruleDTO -->
+	<resultMap type="RuleDTO" id="ruleDTOResultMap">
+		<result property="ruleId" column="ruleId" javaType="java.lang.Long"
+			jdbcType="BIGINT" />
+		<result property="projectId" column="projectId" javaType="java.lang.String"
+			jdbcType="VARCHAR" />
+		<result property="ruleName" column="ruleName" javaType="java.lang.String"
+			jdbcType="VARCHAR" />
+		<result property="ruleDescription" column="ruleDescription"
+			javaType="java.lang.String" jdbcType="VARCHAR" />
+		<result property="isActive" column="isActive" javaType="java.lang.Boolean"
+			jdbcType="TINYINT" />
+		<collection property="listOfRuleProperties" ofType="RuleProperty">
+			<id property="rulePropertyId" column="rulePropertyId" javaType="java.lang.Long"
+				jdbcType="BIGINT" />
+			<result property="propertyName" column="propertyName"
+				javaType="java.lang.String" jdbcType="VARCHAR" />
+			<result property="propertyValue" column="propertyValue"
+				javaType="java.lang.String" jdbcType="VARCHAR" />
+			<result property="propertyUpdatedTimestamp" column="propertyUpdatedTimestamp"
+				javaType="java.util.Date" jdbcType="TIMESTAMP" />
+		</collection>
+	</resultMap>
+
+	<!-- <insert id="addRuleParams" parameterType="RuleParam" useGeneratedKeys="true" 
+		keyProperty="ruleParamId"> INSERT INTO rule_param (rule_id, param_name, param_value) 
+		VALUES ( #{ruleId}, #{paramName},#{paramValue}); </insert> -->
+
+	<!-- <select id="getProject" resultMap="projectResultMap" parameterType="map" 
+		flushCache="false" useCache="false"> SELECT prj_id, parent_prj_id, usr_id, 
+		prj_name, created_timestamp, last_updated_timestamp FROM PROJECT WHERE prj_id=#{projectId,jdbcType=BIGINT} 
+		</select> -->
+
+
+	<!-- <select id="getProjects" resultMap="projectResultMap" resultType="list" 
+		parameterType="map" flushCache="false" useCache="false"> SELECT prj_id, parent_prj_id, 
+		usr_id, prj_name, created_timestamp, last_updated_timestamp FROM PROJECT 
+		WHERE usr_id=#{userId,jdbcType=BIGINT} </select> -->
+
+	<!-- <select id="getSubProjects" resultMap="projectResultMap" resultType="list" 
+		parameterType="map" flushCache="false" useCache="false"> SELECT prj_id, parent_prj_id, 
+		usr_id, prj_name, created_timestamp, last_updated_timestamp FROM PROJECT 
+		WHERE parent_prj_id=#{parentProjectId,jdbcType=BIGINT} </select> -->
+
+	<!-- <resultMap type="Project" id="projectResultMap"> <id property="projectId" 
+		column="project_id" javaType="java.lang.Long" jdbcType="BIGINT" /> <result 
+		property="userId" column="user_id" javaType="java.lang.Long" jdbcType="BIGINT" 
+		/> <result property="projectName" column="project_name" javaType="java.lang.String" 
+		jdbcType="VARCHAR" /> <result property="createdDate" column="created_date" 
+		javaType="java.util.Date" jdbcType="DATE" /> <result property="lastUpdatedDate" 
+		column="last_updated_date" javaType="java.util.Date" jdbcType="DATE" /> </resultMap> -->
+
+	<!-- resultMap type="Project" id="projectResultMap"> <id property="projectId" 
+		column="prj_id" /> <result property="parentProjectId" column="parent_prj_id" 
+		/> <result property="userId" column="usr_id" /> <result property="projectName" 
+		column="prj_name" /> <result property="createdDate" column="created_timestamp" 
+		/> <result property="lastUpdatedDate" column="last_updated_timestamp" /> 
+		</resultMap -->
+
+	<!-- creatProject -->
+	<!-- <insert id="creatProject" parameterType="Project" useGeneratedKeys="true" 
+		keyProperty="userId"> INSERT INTO project(projectName, first_name, last_name) 
+		VALUES(#{emailId}, #{password}, #{firstName}, #{lastName}) </insert> -->
+
+	<!-- select id="getProjectByUserId" resultMap="projectResultMap" parameterType="map" 
+		flushCache="false" useCache="false"> SELECT project_id, user_id, project_name, 
+		created_timestamp, last_updated_timestamp FROM PROJECT WHERE user_id=#{userId,jdbcType=BIGINT} 
+		AND project_name=#{projectName,jdbcType=VARCHAR} </select -->
+
+	<!-- AND project_name=#{projectName,jdbcType=VARCHAR} -->
+
+	<!-- <select id="getProjectByUserId" resultMap="projectResultMap" parameterType="java.util.Map" 
+		flushCache="false" useCache="false"> SELECT project_name FROM project WHERE 
+		user_id=${userId,jdbcType=BIGINT} AND project_name=${projectName,jdbcType=VARCHAR} 
+		</select> -->
+
+
+	<!-- <select id="getTest" resultType="String" parameterType="java.util.Map" 
+		flushCache="false" useCache="false"> SELECT project_name FROM project WHERE 
+		user_id=${userId,jdbcType=BIGINT} AND project_name=${projectName,jdbcType=VARCHAR} 
+		</select> -->
+
+	<!-- update id="updateUser" parameterType="User"> UPDATE USER SET PASSWORD= 
+		#{password}, FIRST_NAME = #{firstName}, LAST_NAME = #{lastName} WHERE USER_ID 
+		= #{userId} </update -->
+
+	<!-- delete id="deleteUser" parameterType="int"> DELETE FROM USER WHERE 
+		USER_ID = #{userId} </delete -->
+
+</mapper>

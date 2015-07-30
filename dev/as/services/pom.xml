@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>com.bimaas</groupId>
+		<artifactId>bimaas-as</artifactId>
+		<version>1.0.0</version>
+	</parent>
+	<artifactId>services-as</artifactId>
+
+	<!--packaging>bundle</packaging -->
+	<packaging>pom</packaging>
+	<name>services-as</name>
+	<description></description>
+	<properties>
+		<CApp.type>lib/synapse/mediator</CApp.type>
+		<mysql.driver.version>5.1.34</mysql.driver.version>
+	</properties>
+	<modules>
+		<module>core</module>
+		<module>internal</module>
+		<module>networkrail</module>
+		<module>mock-services</module>
+	</modules>
+	<dependencies>
+		<dependency>
+			<groupId>javax.ws.rs</groupId>
+			<artifactId>jsr311-api</artifactId>
+			<version>1.1.1</version>
+		</dependency>
+
+		<!-- xml element -->
+		<dependency>
+			<groupId>javax.xml.bind</groupId>
+			<artifactId>jaxb-api</artifactId>
+			<version>2.2.12</version>
+		</dependency>
+
+
+		<!-- MySQL database driver -->
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<version>${mysql.driver.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.cxf</groupId>
+			<artifactId>cxf-bundle-jaxrs</artifactId>
+			<version>2.7.11</version>
+		</dependency>
+
+		
+	</dependencies>
+	<repositories>
+		<repository>
+			<releases>
+				<enabled>true</enabled>
+				<updatePolicy>daily</updatePolicy>
+				<checksumPolicy>ignore</checksumPolicy>
+			</releases>
+			<id>wso2-nexus</id>
+			<url>http://maven.wso2.org/nexus/content/groups/wso2-public/</url>
+		</repository>
+	</repositories>
+	<pluginRepositories>
+		<pluginRepository>
+			<releases>
+				<enabled>true</enabled>
+				<updatePolicy>daily</updatePolicy>
+				<checksumPolicy>ignore</checksumPolicy>
+			</releases>
+			<id>wso2-nexus</id>
+			<url>http://maven.wso2.org/nexus/content/groups/wso2-public/</url>
+		</pluginRepository>
+	</pluginRepositories>
+	<build>
+		<plugins>
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>2.3.2</version>
+				<configuration>
+					<source>1.7</source>
+					<target>1.7</target>
+					<compilerArgument></compilerArgument>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-bundle-plugin</artifactId>
+				<version>2.3.4</version>
+				<extensions>true</extensions>
+				<configuration>
+					<instructions>
+						<Bundle-SymbolicName>bimrule</Bundle-SymbolicName>
+						<Bundle-Name>bimrule</Bundle-Name>
+						<Export-Package>com</Export-Package>
+						<DynamicImport-Package>*</DynamicImport-Package>
+					</instructions>
+				</configuration>
+			</plugin>
+			<plugin>
+				<artifactId>maven-eclipse-plugin</artifactId>
+				<version>2.9</version>
+				<configuration>
+					<buildcommands>
+						<buildcommand>org.eclipse.jdt.core.javabuilder</buildcommand>
+					</buildcommands>
+					<projectnatures>
+						<projectnature>org.wso2.developerstudio.eclipse.artifact.mediator.project.nature</projectnature>
+						<projectnature>org.eclipse.jdt.core.javanature</projectnature>
+					</projectnatures>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+</project>

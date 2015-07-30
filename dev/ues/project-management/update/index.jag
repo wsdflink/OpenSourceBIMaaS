@@ -1,0 +1,171 @@
+<%
+scripts = [];
+var styles = [];
+var process = require('process');
+var url = 'http://' + process.getProperty('server.host') + ':' +process.getProperty('http.port');
+%>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+
+
+<script type="text/javascript">
+   var createCORSRequest = function(method, url)
+   {
+      var xhr = new XMLHttpRequest();
+      if ("withCredentials" in xhr)
+      {
+         // Most browsers.
+         xhr.open(method, url, true);
+      }
+      else if (typeof XDomainRequest != "undefined")
+      {
+         // IE8 & IE9
+         xhr = new XDomainRequest();
+         xhr.open(method, url);
+      }
+      else
+      {
+         // CORS not supported.
+         xhr = null;
+      }
+      return xhr;
+   };
+
+   var url = 'https://52.74.66.119:9451/mock-services-1.0.0/services/project/all';
+   var method = 'POST';
+   var xhrAllProject = createCORSRequest(method, url);
+
+   xhrAllProject.onload = function()
+   {
+      // Success code goes here
+      var jsn = JSON.parse(xhr.response);
+      var template = $('#parent_project_list_template')
+         .html();
+
+      $('#parent_projects_container')
+         .html('')
+         .append("<option>None</option>");
+
+      $.each(jsn.project, function(i, v)
+      {
+
+         x = template.replace(/{project_name}/g, v.projectName)
+            .replace(
+               /{project_id}/g, v.projectId);
+
+         // console.log(x);
+         //if(i == 2 ) { 
+         //   }
+         $('#parent_projects_container')
+            .append(x);
+      });
+
+      //console.log($('#parent_projects_container').find('option'));
+      //$('#parent_projects_container').val(918);	
+   };
+
+   xhrAllProject.onerror = function()
+   {
+      // Error code goes here.
+   };
+
+   xhrAllProject.send();
+
+</script>
+
+
+<script id="parent_project_list_template" type="text/template">
+   <option value={project_id}>{project_name}</option>
+</script>
+
+<!-- ============================ PROJECT CREATE =============================== -->
+
+<!-- Main content -->
+<section class="content">
+   <div class="row">
+      <!-- left column -->
+      <div class="col-xs-12">
+         <!-- Horizontal Form -->
+         <div class="box box-info">
+            <div class="box-header with-border">
+               <h3 class="box-title">Update Project</h3>
+            </div>
+            <!-- /.box-header -->
+            <!-- form start -->
+            <form class="form-horizontal">
+               <div class="box-body">
+                  <div class="form-group">
+                     <label class="col-sm-2 control-label" for="inputEmail3">Project Name
+                     </label>
+                     <div class="col-sm-10">
+                        <input type="text" placeholder="Email" id="prj-name-txt" class="form-control">
+                     </div>
+                  </div>
+                  <div class="form-group">
+                     <label class="col-sm-2 control-label" for="inputPassword3">Description</label>
+                     <div class="col-sm-10">
+                        <textarea id="prj-description-txt" placeholder="Your Description ..." rows="3" class="form-control"></textarea>
+                     </div>
+                  </div>
+                  <div class="form-group">
+                     <label class="col-sm-2 control-label" for="inputPassword3">Parent project
+                     </label>
+                     <div class="col-sm-10">
+                        <select id="parent_projects_container" class="form-control">
+                        </select>
+                     </div>
+                  </div>
+                  <div class="form-group">
+                     <label for="inputPassword3" class="col-sm-2 control-label">Project Location
+                     </label>
+                     <label for="inputPassword3" class="col-sm-1 control-label" style="text-align: left">Longtitude</label>
+                     <div class="col-sm-4">
+                        <input type="text" placeholder="Longtitude" id="longitude-txt" class="form-control">
+                     </div>
+                     <label for="inputPassword3" class="col-sm-1 control-label" style="text-align: left">Latitude</label>
+                     <div class="col-sm-4">
+                        <input type="text" placeholder="Latitude" id="latitude-txt" class="form-control">
+                     </div>
+                  </div>
+                  <div class="form-group">
+                     <label class="col-sm-2 control-label" for="inputPassword3">Project GEO Fence</label>
+                     <div class="col-sm-10">
+                        <input type="text" placeholder="Project GEO Fence" id="inputEmail3" class="form-control">
+                     </div>
+                  </div>
+                  <div class="form-group">
+                     <label class="col-sm-2 control-label" for="inputPassword3">Project Category
+                     </label>
+                     <div class="col-sm-10">
+                        <select class="form-control" id="prj-category-drp">
+                           <option value="0">Construction</option>
+                           <option value="1">Facility Management</option>
+                        </select>
+                     </div>
+                  </div>
+                  <div class="form-group">
+                     <label class="col-sm-2 control-label">Project Logo</label>
+                     <div class="col-sm-10">
+                        <input type="file" id="exampleInputFile">
+                        <p class="help-block">Select your logo for the project</p>
+                     </div>
+                  </div>
+               </div>
+               <!-- /.box-body -->
+               <div class="box-footer">
+                  <button class="btn btn-default" type="submit">Cancel</button>
+                  <button class="btn btn-info pull-right" type="submit">Update</button>
+               </div>
+
+         </div>
+         <!-- /.box-footer -->
+         </form>
+      </div>
+      <!-- 12 column wrapper -->
+   </div>
+   <!-- /.row -->
+</section>
+<!-- /.content -->
+
+<!-- =============================+++++++++++=========================== -->

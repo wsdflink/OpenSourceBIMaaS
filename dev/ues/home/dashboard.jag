@@ -1,0 +1,21 @@
+<%
+var caramel;
+	reader = require('/modules/reader.js'),
+	check = require('/modules/checker.jag'),
+
+
+	//loginController = require('/modules/loginController.jag'),
+
+	caramel = require('caramel');
+//print(check.auth());
+
+	
+if(check.auth()){
+caramel.render({
+		'title': {text :'BIMaas | Dashboard'},
+		'body': {text:reader.readPosts()}
+	});
+}
+
+	
+%>

@@ -1,0 +1,76 @@
+<%
+
+var caramel;
+	reader = require('/modules/reader.js'),
+	login = require('/modules/login.jag'),
+	//readck = require('/modules/readcookie.js'),
+
+	//loginController = require('/modules/loginController.jag'),
+
+	caramel = require('caramel');
+
+login.auth();
+
+%>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script type="text/javascript">
+
+
+$(document).ready(function(){
+   // alert("yesaaa");
+	var tmpSubject, tmpDate, tmpThumb;
+	$.ajax({
+            url: '/home/content/cookie/cookie.xml',
+            type: 'GET', 
+            dataType: 'xml',
+            success: function(returnedXMLResponse){
+                $("ns\\:loginWithRememberMeOptionResponse, loginWithRememberMeOptionResponse", returnedXMLResponse).each(function(){
+                     tmpSubject = $("ax2129\\:authenticated, authenticated", this).text();
+                     tmpDate = $("ax2129\\:maxAge, maxAge", this).text();
+                     tmpThumb = $("ax2129\\:value, value", this).text();
+
+                    console.log(tmpSubject + '' + tmpDate + ' ' + tmpThumb );
+//alert(tmpSubject);
+//alert(tmpDate);
+//alert("second"+tmpThumb);
+function setCookie(cname,cvalue,exdays) {
+    var d = new Date();
+    d.setTime(d.getTime() + (exdays*24*60*60*1000));
+    var expires = "expires=" + d.toGMTString();
+    var domain="52.74.66.119";
+    var path="/";
+    document.cookie = cname+"="+cvalue+"; "+expires; "+domain; "+path;
+}
+//document.cookie = name + '=; domain=52.74.66.119; path=/home; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+setCookie("cookieval", tmpThumb, 30);
+
+
+
+
+			if(tmpSubject){
+				//alert("yes");
+				//location.replace('https://52.74.66.119:9453/mitrai/dashboard.jag?ck='+tmpThumb+'&abc=efd');
+				location.replace('https://52.74.66.119:9453/home/dashboard.jag');
+			}else{
+				alert("Enter correct username and password ...");
+			}
+
+
+
+                })
+            }  
+        }); 
+	
+      
+    
+});
+
+
+
+
+
+
+</script>
+
+

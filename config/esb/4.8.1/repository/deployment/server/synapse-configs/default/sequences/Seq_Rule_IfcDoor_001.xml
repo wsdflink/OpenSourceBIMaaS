@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sequence xmlns="http://ws.apache.org/ns/synapse" name="Seq_Rule_IfcDoor_001">
+   <property name="messageType" value="application/json" scope="axis2"/>
+   <log>
+      <property name="__________________________________________"
+                value="INSIDE SEQUENCE"/>
+   </log>
+   <property xmlns:ns="http://org.apache.synapse/xsd"
+             name="LAST_REVISION_ID"
+             expression="json-eval($.response.result.lastRevisionId)"
+             scope="default"
+             type="STRING"/>
+   <payloadFactory media-type="json">
+      <format>{"request":{"interface":"org.buildingsmart.bimsie1.Bimsie1LowLevelInterface","method":"getDataObjectsByType","parameters":{"roid":$1,"packageName":"ifc2x3tc1","className":"IfcDoor","flat":true,"schema":"ifc2x3tc1"}},"token":"$2"}</format>
+      <args>
+         <arg xmlns:ns="http://org.apache.synapse/xsd"
+              evaluator="xml"
+              expression="synapse:get-property('LAST_REVISION_ID')"/>
+         <arg xmlns:ns="http://org.apache.synapse/xsd"
+              evaluator="xml"
+              expression="synapse:get-property('LE_BIM_SERVER_TOKEN')"/>
+      </args>
+   </payloadFactory>
+   <log>
+      <property name="__________________________________________"
+                value="SENDING REQUEST GET DATA OBJECTS BY TYPE"/>
+      <property xmlns:ns="http://org.apache.synapse/xsd"
+                name="_________________BODY______________"
+                expression="json-eval($)"/>
+   </log>
+   <callout endpointKey="bimserverendpoint">
+      <source type="envelope"/>
+      <target xmlns:s12="http://www.w3.org/2003/05/soap-envelope"
+              xmlns:ns="http://org.apache.synapse/xsd"
+              xmlns:s11="http://schemas.xmlsoap.org/soap/envelope/"
+              xpath="s11:Body/child::*[fn:position()=1] | s12:Body/child::*[fn:position()=1]"/>
+   </callout>
+   <log>
+      <property name="__________________________________________"
+                value="RECIEVED RESPONSE OF GET DATA OBJECTS BY TYPE"/>
+      <property xmlns:ns="http://org.apache.synapse/xsd"
+                name="_________________BODY______________"
+                expression="json-eval($)"/>
+   </log>
+   <iterate xmlns:ns="http://org.apache.synapse/xsd"
+            id="ObjectIterator"
+            expression="//jsonObject/response/result"
+            sequential="true">
+      <target>
+         <sequence>
+            <property name="DOOR_OID"
+                      expression="json-eval($.result.oid)"
+                      scope="default"
+                      type="STRING"/>
+            <payloadFactory media-type="json">
+               <format>      {"request":{"interface":"org.buildingsmart.bimsie1.Bimsie1LowLevelInterface","method":"getDataObjectByOid","parameters":{"roid":$1,"oid":$2}},"token":"$3"}      </format>
+               <args>
+                  <arg evaluator="xml" expression="synapse:get-property('LAST_REVISION_ID')"/>
+                  <arg evaluator="xml" expression="synapse:get-property('DOOR_OID')"/>
+                  <arg evaluator="xml"
+                       expression="synapse:get-property('LE_BIM_SERVER_TOKEN')"/>
+               </args>
+            </payloadFactory>
+            <log>
+               <property name="__________________________________________"
+                         value="SENDING REQUEST GET DATA OBJECTS BY OID"/>
+               <property name="_________________BODY______________" expression="json-eval($)"/>
+            </log>
+            <callout endpointKey="bimserverendpoint">
+               <source type="envelope"/>
+               <target xmlns:s12="http://www.w3.org/2003/05/soap-envelope"
+                       xmlns:s11="http://schemas.xmlsoap.org/soap/envelope/"
+                       xpath="s11:Body/child::*[fn:position()=1] | s12:Body/child::*[fn:position()=1]"/>
+            </callout>
+            <log>
+               <property name="__________________________________________"
+                         value="RECIEVED RESPONSE OF GET DATA OBJECTS BY OID"/>
+               <property name="_________________BODY______________" expression="json-eval($)"/>
+            </log>
+            <class name="com.bimaas.networkrail.mediators.IfcDoorHeightRuleMediator"/>
+            <log>
+               <property name="__________________________________________"
+                         value="RECIEVED RESPONSE OF A FAILED DOOR"/>
+               <property name="______________****__BODY__****______" expression="json-eval($)"/>
+            </log>
+         </sequence>
+      </target>
+   </iterate>
+   <property name="messageType" value="application/json" scope="axis2"/>
+   <log>
+      <property xmlns:ns="http://org.apache.synapse/xsd"
+                name="*********************0000000000000**********"
+                expression="get-property('RULE_PARAMS')"/>
+   </log>
+</sequence>

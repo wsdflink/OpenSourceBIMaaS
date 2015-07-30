@@ -7,4 +7,4 @@ See full features of BIMaaS platform in the BIMaaS official web page [www.bimaas
 [www.bimaas.uk]: http://bimaas.uk
 
 #How to build from source
-Since this platform is built on top of WSO2 product stack, required WSO2 products has to be downloaded and replace the configurations files which could be found in config/{product}/ folder. Then go to dev/ folder and build the whole project using maven and place the artifacts inside each products, {product}/repository/components/lib folder.
+Since this platform is built on top of WSO2 product stack, first required WSO2 products has to be downloaded. Then replace the configuration file which can be found in config/{product}/{path-to-each-files} with corresponding products. Next go to dev/ folder and build the whole project using maven and place the built artifacts (jar/war) inside each products to {product}/repository/components/lib folder.

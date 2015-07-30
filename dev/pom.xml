@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.bimaas</groupId>
+	<artifactId>bimaas-dev</artifactId>
+	<version>1.0.0</version>
+	<!--packaging>bundle</packaging -->
+	<packaging>pom</packaging>
+	<name>bimaas-dev</name>
+	<description></description>
+	<properties>
+		<CApp.type>lib/synapse/mediator</CApp.type>
+	</properties>
+	<modules>
+		<module>esb</module>
+		<module>as</module>
+		<module>foundation</module>
+		<module>data</module>
+		<module>ues</module>
+	</modules>
+	<dependencies>
+		<!-- Log -->
+		<dependency>
+			<groupId>commons-logging</groupId>
+			<artifactId>commons-logging</artifactId>
+			<version>1.1.1</version>
+		</dependency>
+		<dependency>
+		    <groupId>junit</groupId>
+		    <artifactId>junit</artifactId>
+		    <version>4.8.2</version>
+		    <scope>test</scope>
+        	</dependency>
+	</dependencies>
+	<repositories>
+		<repository>
+			<releases>
+				<enabled>true</enabled>
+				<updatePolicy>daily</updatePolicy>
+				<checksumPolicy>ignore</checksumPolicy>
+			</releases>
+			<id>wso2-nexus</id>
+			<url>http://maven.wso2.org/nexus/content/groups/wso2-public/</url>
+		</repository>
+	</repositories>
+	<pluginRepositories>
+		<pluginRepository>
+			<releases>
+				<enabled>true</enabled>
+				<updatePolicy>daily</updatePolicy>
+				<checksumPolicy>ignore</checksumPolicy>
+			</releases>
+			<id>wso2-nexus</id>
+			<url>http://maven.wso2.org/nexus/content/groups/wso2-public/</url>
+		</pluginRepository>
+	</pluginRepositories>
+	<build>
+		<plugins>
+<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>2.3.2</version>
+				<configuration>
+					<source>1.7</source>
+					<target>1.7</target>
+					<compilerArgument></compilerArgument>
+				</configuration>
+			</plugin>
+			<plugin>
+				<artifactId>maven-eclipse-plugin</artifactId>
+				<version>2.9</version>
+				<configuration>
+					<buildcommands>
+						<buildcommand>org.eclipse.jdt.core.javabuilder</buildcommand>
+					</buildcommands>
+					<projectnatures>
+						<projectnature>org.wso2.developerstudio.eclipse.artifact.mediator.project.nature</projectnature>
+						<projectnature>org.eclipse.jdt.core.javanature</projectnature>
+					</projectnatures>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+</project>

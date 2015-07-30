@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sequence xmlns="http://ws.apache.org/ns/synapse" name="Seq_CheckoutHandler">
+   <log>
+      <property xmlns:ns="http://org.apache.synapse/xsd"
+                name="Request_1: "
+                expression="json-eval($.)"/>
+   </log>
+   <property xmlns:ns="http://org.apache.synapse/xsd"
+             name="serializerOid"
+             expression="json-eval($.request.parameters.serializerOid)"
+             scope="default"
+             type="STRING"/>
+   <call>
+      <endpoint key="bimserverendpoint"/>
+   </call>
+   <log>
+      <property xmlns:ns="http://org.apache.synapse/xsd"
+                name="Response_1: "
+                expression="json-eval($.)"/>
+   </log>
+   <property xmlns:ns="http://org.apache.synapse/xsd"
+             name="topicId"
+             expression="json-eval($.response.result)"
+             scope="default"
+             type="STRING"/>
+   <payloadFactory media-type="json">
+      <format>{ "request": {  "interface": "Bimsie1NotificationRegistryInterface",  "method": "getProgress",  "parameters": {    "topicId":"$1"   } }}</format>
+      <args>
+         <arg evaluator="json" expression="$.response.result"/>
+      </args>
+   </payloadFactory>
+   <property name="BIM_SERVER_TOKEN"
+             expression="synapse:get-property('LE_BIM_SERVER_TOKEN')"
+             scope="default"/>
+   <class name="com.mitrai.bimexchange.BimServerAuthorizationMediator">
+   </class>
+   <log>
+      <property xmlns:ns="http://org.apache.synapse/xsd"
+                name="Request_2: "
+                expression="json-eval($.)"/>
+   </log>
+   <call>
+      <endpoint key="bimserverendpoint"/>
+   </call>
+   <log>
+      <property xmlns:ns="http://org.apache.synapse/xsd"
+                name="Response_2: "
+                expression="json-eval($.)"/>
+   </log>
+   <filter xmlns:ns="http://org.apache.synapse/xsd"
+           source="json-eval($.response.result.state)"
+           regex="STARTED">
+      <then>
+         <property name="BIM_SERVER_TOKEN"
+                   expression="synapse:get-property('LE_BIM_SERVER_TOKEN')"
+                   scope="default"/>
+         <class name="com.mitrai.bimexchange.CheckoutUrlMediator">
+            <property name="bimServerPort" value="9771"/>
+            <property name="bimServerIp" value="52.74.66.119"/>
+         </class>
+         <send/>
+      </then>
+      <else>
+         <log category="ERROR">
+            <property name="Download not ready" expression="json-eval($.)"/>
+         </log>
+         <send/>
+      </else>
+   </filter>
+   <log>
+      <property xmlns:ns="http://org.apache.synapse/xsd"
+                name="FINAL_RESPONSE"
+                expression="json-eval($.)"/>
+   </log>
+   <send/>
+</sequence>

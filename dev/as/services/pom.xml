@@ -21,7 +21,6 @@
 	<modules>
 		<module>core</module>
 		<module>internal</module>
-		<module>networkrail</module>
 		<module>mock-services</module>
 	</modules>
 	<dependencies>
